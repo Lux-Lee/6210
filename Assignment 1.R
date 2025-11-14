@@ -3,14 +3,21 @@
 ##  Lusia Lee
 ##***************************
 
+# Added explicit install lines so anyone can run the script without missing package errors.
+
 ## package used ----
+install.packages("tidyverse")
 library(tidyverse)
+install.packages("sf")
 library(sf)
+install.packages("dplyr")
 library(dplyr)
+install.packages("jtools")
 library(jtools)
+install.packages("ggplot2")
 library(ggplot2)
+install.packages("broom")
 library(broom)
-#
 
 ## theme setting ----
 theme_black <- function(base_size = 12, base_family = "") {
@@ -57,10 +64,11 @@ theme_black <- function(base_size = 12, base_family = "") {
       plot.margin = unit(rep(1, 4), "lines")
     )
 }
-#
 
 ## Data Cleaning and Preparation ----
-vespidae_raw <- read_tsv("C:/Users/95joo/OneDrive/Documents/BINF-6210/Data/result.tsv")
+vespidae_raw <- read_tsv("C:/Users/lycar/OneDrive/Desktop/6210/Assignment 2/data/result.tsv")
+
+# Having a link to the taxonomic data would have made the code more reproducible
 
 # minimun value set up
 min_bin <-10
@@ -109,6 +117,33 @@ vespidae_range <- function(vespidae_clean) {
     NA_real_
   })
 }
+
+## Additional Map Plot
+
+#
+
+install.packages("rnaturalearth")
+library(rnaturalearth)
+install.packages("rnaturalearthdata")
+library(rnaturalearthdata)
+
+# Get basemap (USA, CAN, MEX)
+na_countries <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |>
+  dplyr::filter(adm0_a3 %in% c("USA","CAN","MEX"))
+
+# Make points as sf
+vespidae_pts <- sf::st_as_sf(vespidae_clean, coords = c("lon","lat"), crs = 4326)
+
+# Plot
+p_map <- ggplot() +
+  geom_sf(data = na_countries, fill = "grey95", color = "grey70", linewidth = 0.3) +
+  geom_sf(data = vespidae_pts, alpha = 0.6, size = 0.8, color = "steelblue") +
+  coord_sf(xlim = c(-170, -50), ylim = c(10, 75), expand = FALSE) +
+  labs(title = "Vespidae records across North America", x = NULL, y = NULL) +
+  theme_black()
+
+print(p_map)
+
 
 ## Calculate Variables for Hypothesis Testing ----
 bin_summary_1 <- vespidae_clean %>%
@@ -174,6 +209,13 @@ rapoport_plot_2 <- ggplot(bin_summary_2, aes(x = median_latitude, y = log(range_
   theme_black()
 
 print(rapoport_plot_2)
+
+## Simple regression assumption check
+# Checks if residuals look random and roughly normal
+par(mfrow = c(2, 2))  # make a 2x2 grid of plots
+plot(rapoport_model_1)  # base R diagnostic plots for model 1
+plot(rapoport_model_2)  # base R diagnostic plots for model 2
+par(mfrow = c(1, 1))    # reset plotting layout
 
 #model1_lats <- bin_summary_1 %>%
   #select(median_latitude) %>%
