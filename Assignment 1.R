@@ -12,7 +12,6 @@
 ##*library(broom)
 ##***************************
 
-<<<<<<< HEAD
 ### 1.0: Package Setup ----
 
 # This section checks if packages are installed, installs them if missing, and then loads them.
@@ -36,23 +35,6 @@ conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("select", "dplyr")
 conflicted::conflict_prefer("lag", "dplyr")
 #
-=======
-# Added explicit install lines so anyone can run the script without missing package errors.
-
-## package used ----
-install.packages("tidyverse")
-library(tidyverse)
-install.packages("sf")
-library(sf)
-install.packages("dplyr")
-library(dplyr)
-install.packages("jtools")
-library(jtools)
-install.packages("ggplot2")
-library(ggplot2)
-install.packages("broom")
-library(broom)
->>>>>>> d9f24149bfed807cdd2219e15e724a63fab2493e
 
 ## 2.0: Theme Setting ----
 theme_black <- function(base_size = 12, base_family = "") {
@@ -98,16 +80,10 @@ theme_black <- function(base_size = 12, base_family = "") {
       plot.margin = unit(rep(1, 4), "lines")
     )
 }
+#
 
-<<<<<<< HEAD
 ## 3.0: Data Loading and Preparation ----
 vespidae_raw <- read_tsv("https://portal.boldsystems.org/api/documents/eAErSaywSkvMzcyptApLLS7ITElMtc7JzM0sSU0BAJPDCpg=/download?format=tsv")
-=======
-## Data Cleaning and Preparation ----
-vespidae_raw <- read_tsv("C:/Users/lycar/OneDrive/Desktop/6210/Assignment 2/data/result.tsv")
-
-# Having a link to the taxonomic data would have made the code more reproducible
->>>>>>> d9f24149bfed807cdd2219e15e724a63fab2493e
 
 # minimun value set up
 min_bin <-10
@@ -152,40 +128,9 @@ vespidae_range <- function(point_data) {
   }) 
 }
 
-<<<<<<< HEAD
 ## 5.0: Calculate Variables for Hypothesis Testing ----
 
 ## Model 1: 1D Latitudinal Range
-=======
-## Additional Map Plot
-
-#
-
-install.packages("rnaturalearth")
-library(rnaturalearth)
-install.packages("rnaturalearthdata")
-library(rnaturalearthdata)
-
-# Get basemap (USA, CAN, MEX)
-na_countries <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |>
-  dplyr::filter(adm0_a3 %in% c("USA","CAN","MEX"))
-
-# Make points as sf
-vespidae_pts <- sf::st_as_sf(vespidae_clean, coords = c("lon","lat"), crs = 4326)
-
-# Plot
-p_map <- ggplot() +
-  geom_sf(data = na_countries, fill = "grey95", color = "grey70", linewidth = 0.3) +
-  geom_sf(data = vespidae_pts, alpha = 0.6, size = 0.8, color = "steelblue") +
-  coord_sf(xlim = c(-170, -50), ylim = c(10, 75), expand = FALSE) +
-  labs(title = "Vespidae records across North America", x = NULL, y = NULL) +
-  theme_black()
-
-print(p_map)
-
-
-## Calculate Variables for Hypothesis Testing ----
->>>>>>> d9f24149bfed807cdd2219e15e724a63fab2493e
 bin_summary_1 <- vespidae_clean %>%
   group_by(bin_uri) %>%
   summarise(
@@ -277,35 +222,3 @@ rapoport_plot_2 <- ggplot(bin_summary_2, aes(x = median_latitude, y = log(range_
   theme_black()
 
 print(rapoport_plot_2)
-<<<<<<< HEAD
-=======
-
-## Simple regression assumption check
-# Checks if residuals look random and roughly normal
-par(mfrow = c(2, 2))  # make a 2x2 grid of plots
-plot(rapoport_model_1)  # base R diagnostic plots for model 1
-plot(rapoport_model_2)  # base R diagnostic plots for model 2
-par(mfrow = c(1, 1))    # reset plotting layout
-
-#model1_lats <- bin_summary_1 %>%
-  #select(median_latitude) %>%
-  #mutate(model_source = "Model 1 (1D Range)") 
-
-#model2_lats <- bin_summary_2 %>%
- # select(median_latitude) %>%
- # mutate(model_source = "Model 2 (2D Area)") 
-
-#combined_lats <- bind_rows(model1_lats, model2_lats) # Combine them into one data frame
-
-#ggplot(combined_lats, aes(x = median_latitude, fill = model_source)) +
- # geom_density(alpha = 0.4) +  # alpha adds transparency
-  #labs(
-   # title = "Distribution of Median Latitudes Used in Each Model",
-    #x = "Median Latitude of BIN (°N)",
-    #y = "Density",
-    #fill = "Model"
-  #) +
-  #theme_black()
-  #theme_minimal()
-
->>>>>>> d9f24149bfed807cdd2219e15e724a63fab2493e
